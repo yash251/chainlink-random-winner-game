@@ -35,5 +35,18 @@ contract RandomWinnerGame is VRFConsumerBase, Ownable {
     event PlayerJoined(uint256 gameId, address player);
 
     // event when the game ends
-    event GameEnded(uint256 gameId, address winner, bytes32 requestId);  
+    event GameEnded(uint256 gameId, address winner, bytes32 requestId);
+
+    /**
+    * constructor inherits a VRFConsumerBase and initiates the values for keyHash, fee and gameStarted
+    * @param vrfCoordinator address of VRFCoordinator contract
+    * @param linkToken address of LINK token contract
+    * @param vrfFee the amount of LINK to send with the request
+    * @param vrfKeyHash ID of public key against which randomness is generated
+    */
+    constructor (address vrfCoordinator, address linkToken, bytes32 vrfKeyHash, uint256 vrfFee) VRFConsumerBase(vrfCoordinator, linkToken) {
+        keyHash = vrfKeyHash;
+        fee = vrfFee;
+        gameStarted = false;
+    }
 }

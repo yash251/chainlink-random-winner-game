@@ -9,6 +9,27 @@ import styles from "./globals.css";
 import { subgraphQuery } from "../../utils";
 
 export default function Home() {
+
+  const zero = BigNumber.from("0");
+  // walletConnected keep track of whether the user's wallet is connected or not
+  const [walletConnected, setWalletConnected] = useState(false);
+  // loading is set to true when we are waiting for a transaction to get mined
+  const [loading, setLoading] = useState(false);
+  // boolean to keep track of whether the current connected account is owner or not
+  const [isOwner, setIsOwner] = useState(false);
+  // entryFee is the ether required to enter a game
+  const [entryFee, setEntryFee] = useState(zero);
+  // maxPlayers is the max number of players that can play the game
+  const [maxPlayers, setMaxPlayers] = useState(0);
+  // Checks if a game started or not
+  const [gameStarted, setGameStarted] = useState(false);
+  // Players that joined the game
+  const [players, setPlayers] = useState([]);
+  // Winner of the game
+  const [winner, setWinner] = useState();
+  // Keep a track of all the logs for a given game
+  const [logs, setLogs] = useState([]);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

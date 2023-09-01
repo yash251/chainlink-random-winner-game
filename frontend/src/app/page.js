@@ -30,6 +30,9 @@ export default function Home() {
   // Keep a track of all the logs for a given game
   const [logs, setLogs] = useState([]);
 
+  // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
+  const web3ModalRef = useRef();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

@@ -33,6 +33,10 @@ export default function Home() {
   // Create a reference to the Web3 Modal (used for connecting to Metamask) which persists as long as the page is open
   const web3ModalRef = useRef();
 
+  // This is used to force react to re render the page when we want to
+  // in our case we will use force update to show new logs
+  const forceUpdate = React.useReducer(() => ({}), {})[1];
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

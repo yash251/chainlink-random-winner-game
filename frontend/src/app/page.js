@@ -135,6 +135,59 @@ export default function Home() {
     }
   };
 
+  /**
+   * checkIfGameStarted checks if the game has started or not and intializes the logs
+   * for the game
+   */
+  const checkIfGameStarted = async () => {
+    try {
+      // Get the provider from web3Modal, which in our case is MetaMask
+      // No need for the Signer here, as we are only reading state from the blockchain
+      const provider = await getProviderOrSigner();
+      // We connect to the Contract using a Provider, so we will only
+      // have read-only access to the Contract
+      const randomGameNFTContract = new Contract(
+        RANDOM_GAME_NFT_CONTRACT_ADDRESS,
+        abi,
+        provider
+      );
+      // read the gameStarted boolean from the contract
+      const _gameStarted = await randomGameNFTContract.gameStarted();
+
+      const _gameArray = await subgraphQuery(FETCH_CREATED_GAME());
+      const _game = _gameArray.games[0];
+      let _logs = [];
+      // Initialize the logs array and query the graph for current gameID
+      if (_gameStarted) {
+        _logs = [`Game has started with ID: ${_game.id}`];
+        if (_game.players && _game.players.length > 0) {
+          _logs.push(
+            `${_game.players.length} / ${_game.maxPlayers} already joined 👀 `
+          );
+          _game.players.forEach((player) => {
+            _logs.push(`${player} joined 🏃‍♂️`);
+          });
+        }
+        setEntryFee(BigNumber.from(_game.entryFee));
+        setMaxPlayers(_game.maxPlayers);
+      } else if (!gameStarted && _game.winner) {
+        _logs = [
+          `Last game has ended with ID: ${_game.id}`,
+          `Winner is: ${_game.winner} 🎉 `,
+          `Waiting for host to start new game....`,
+        ];
+
+        setWinner(_game.winner);
+      }
+      setLogs(_logs);
+      setPlayers(_game.players);
+      setGameStarted(_gameStarted);
+      forceUpdate();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

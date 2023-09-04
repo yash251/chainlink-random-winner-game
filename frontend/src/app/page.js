@@ -108,6 +108,33 @@ export default function Home() {
     }
   };
 
+  /**
+   * joinGame: Is called by a player to join the game
+   */
+  const joinGame = async () => {
+    try {
+      // Get the signer from web3Modal, which in our case is MetaMask
+      const signer = await getProviderOrSigner(true);
+      // We connect to the Contract using a signer because we want the owner to
+      // sign the transaction
+      const randomGameNFTContract = new Contract(
+        RANDOM_GAME_NFT_CONTRACT_ADDRESS,
+        abi,
+        signer
+      );
+      setLoading(true);
+      // call the startGame function from the contract
+      const tx = await randomGameNFTContract.joinGame({
+        value: entryFee,
+      });
+      await tx.wait();
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">

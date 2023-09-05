@@ -239,6 +239,75 @@ export default function Home() {
     }
   }, [walletConnected]);
 
+  /*
+    renderButton: Returns a button based on the state of the dapp
+  */
+  const renderButton = () => {
+    // If wallet is not connected, return a button which allows them to connect their wallet
+    if (!walletConnected) {
+      return (
+        <button onClick={connectWallet} className={styles.button}>
+          Connect your wallet
+        </button>
+      );
+    }
+
+    // If we are currently waiting for something, return a loading button
+    if (loading) {
+      return <button className={styles.button}>Loading...</button>;
+    }
+    // Render when the game has started
+    if (gameStarted) {
+      if (players.length === maxPlayers) {
+        return (
+          <button className={styles.button} disabled>
+            Choosing winner...
+          </button>
+        );
+      }
+      return (
+        <div>
+          <button className={styles.button} onClick={joinGame}>
+            Join Game 🚀
+          </button>
+        </div>
+      );
+    }
+    // Start the game
+    if (isOwner && !gameStarted) {
+      return (
+        <div>
+          <input
+            type="number"
+            className={styles.input}
+            onChange={(e) => {
+              // The user will enter the value in ether, we will need to convert
+              // it to WEI using parseEther
+              setEntryFee(
+                e.target.value >= 0
+                  ? utils.parseEther(e.target.value.toString())
+                  : zero
+              );
+            }}
+            placeholder="Entry Fee (ETH)"
+          />
+          <input
+            type="number"
+            className={styles.input}
+            onChange={(e) => {
+              // The user will enter the value for maximum players that can join the game
+              setMaxPlayers(e.target.value ?? 0);
+            }}
+            placeholder="Max players"
+          />
+          <button className={styles.button} onClick={startGame}>
+            Start Game 🚀
+          </button>
+        </div>
+      );
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
